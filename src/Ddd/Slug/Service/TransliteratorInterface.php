@@ -20,7 +20,7 @@ interface TransliteratorInterface
     public function transliterate($string);
 
     /**
-     * Name of the transliterator
+     * Returns transliterator's name.
      *
      * @return string
      */
