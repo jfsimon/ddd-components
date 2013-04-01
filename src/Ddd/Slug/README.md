@@ -61,11 +61,10 @@ Then you just have to call the `slugify` method to generate the slug:
 
 ``` php
 use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
-use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
 
 $article = new Article();
 $article->setTitle('Hello world!');
-$article->slugify(new DefaultSlugGenerator(array(new LatinTransliterator())));
+$article->slugify(new DefaultSlugGenerator());
 
 echo $article->getSlug(); // writes "2013-hello-world"
 ```

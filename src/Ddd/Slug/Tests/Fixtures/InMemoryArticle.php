@@ -15,6 +15,11 @@ class InMemoryArticle implements SluggableInterface
         $this->slug = $slugifier->slugify(array($this->title));
     }
 
+    public function slugifyWithPrefix(SlugGeneratorInterface $slugifier)
+    {
+        $this->slug = $slugifier->slugify(array('title' => $this->title), array('pattern' => 'article:{title}'));
+    }
+
     public function setTitle($title)
     {
         $this->title = $title;

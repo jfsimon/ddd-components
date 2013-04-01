@@ -2,15 +2,13 @@
 
 namespace Ddd\Slug\Tests;
 
-use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
+use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
+use Ddd\Slug\Infra\SlugGenerator\PassthruSlugGenerator;
+use Ddd\Slug\Infra\SlugGenerator\SlugGenerator;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use Ddd\Slug\Tests\Fixtures\InMemoryArticle;
 use Ddd\Slug\Tests\Fixtures\DoctrineArticle;
-use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
-use Ddd\Slug\Infra\SlugGenerator\PassthruSlugGenerator;
-use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
-use Ddd\Slug\Infra\Transliterator\PassthruTransliterator;
 
 class AcceptanceTest extends \PhpUnit_Framework_TestCase
 {
@@ -19,8 +17,7 @@ class AcceptanceTest extends \PhpUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $transliterators = new TransliteratorCollection(array(new PassthruTransliterator(), new LatinTransliterator()));
-        $this->defaultSlugGenerator = new DefaultSlugGenerator($transliterators);
+        $this->defaultSlugGenerator = new DefaultSlugGenerator();
         $this->passthruSlugGenerator = new PassthruSlugGenerator();
     }
 
@@ -49,6 +46,15 @@ class AcceptanceTest extends \PhpUnit_Framework_TestCase
         $article->setTitle($title);
         $article->slugify($this->defaultSlugGenerator);
         $this->assertEquals($slug, $article->getSlug());
+    }
+
+    /** @dataProvider Ddd\Slug\Tests\AcceptanceDataProvider::getEntityLatinTransliteratedSlugificationData */
+    public function testEntityLatinTransliteratedSlugificationWithPrefix($title, $slug)
+    {
+        $article = new InMemoryArticle();
+        $article->setTitle($title);
+        $article->slugifyWithPrefix($this->defaultSlugGenerator);
+        $this->assertEquals('article:'.$slug, $article->getSlug());
     }
 
     public function testICouldUseSlugifyWithDoctrineOrm()
